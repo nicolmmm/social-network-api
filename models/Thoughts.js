@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-import reactionsSchema from "./Reactions";
+const reactionsSchema = require("./Reactions");
 
 const thoughtsSchema = new Schema({
   thoughtText: {
@@ -23,7 +23,7 @@ const thoughtsSchema = new Schema({
 
 //function formatDate(createdAt) {}
 
-userSchema
+thoughtsSchema
   .virtual("reactionCount")
   // Getter
   .get(function () {
