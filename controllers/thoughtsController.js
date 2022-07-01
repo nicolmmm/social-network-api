@@ -38,9 +38,16 @@ module.exports = {
       .then((thought) => {
         const filter = { username: req.body.username };
         const update = { thoughts: thought._id };
+        console.log(req.body, update);
         //appending thought _id to user
-        User.findOneAndUpdate(filter, { $push: update }, { new: true });
-        res.status(200).json(thought);
+        User.findOneAndUpdate(filter, { $push: update }, { new: true })
+          .select("-__v")
+          .lean()
+          .then(async (user) =>
+            !user
+              ? res.status(404).send("no user found")
+              : res.status(200).json(update)
+          );
       })
       .catch((err) => res.status(500).json(err));
   },
@@ -73,38 +80,37 @@ module.exports = {
       .catch((err) => res.status(500).send("something went wrong :S"));
   },
 
-  // Add an assignment to a student
-  addAssignment(req, res) {
-    console.log("You are adding an assignment");
-    console.log(req.body);
-    Student.findOneAndUpdate(
-      { _id: req.params.studentId },
-      { $addToSet: { assignments: req.body } },
-      { runValidators: true, new: true }
-    )
-      .then((student) =>
-        !student
-          ? res
-              .status(404)
-              .json({ message: "No student found with that ID :(" })
-          : res.json(student)
+  // add a reaction to a thought
+  addReactionToThought(req, res) {
+    const filter = { _id: req.params._id };
+    const update = { reactions: req.body };
+    console.log(filter, update);
+    Thoughts.findOneAndUpdate(filter, { $push: update }, { new: true })
+      .then(async (reaction) =>
+        !reaction
+          ? res.status(404).send({ message: "No thought with that ID" })
+          : res.json(update)
       )
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).json(err);
+      });
   },
-  // Remove assignment from a student
-  removeAssignment(req, res) {
-    Student.findOneAndUpdate(
-      { _id: req.params.studentId },
-      { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
-      { runValidators: true, new: true }
-    )
-      .then((student) =>
-        !student
-          ? res
-              .status(404)
-              .json({ message: "No student found with that ID :(" })
-          : res.json(student)
+
+  //delete reaction
+  deleteReaction(req, res) {
+    const filter = { _id: req.params._id };
+    const update = { reactions: { _id: req.params.reactionId } };
+    console.log(filter, update);
+    Thoughts.findOneAndUpdate(filter, { $pull: update }, { new: true })
+      .then((reaction) =>
+        !reaction
+          ? res.status(404).send("user not found")
+          : res.status(200).send({ removed: reaction })
       )
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).json(err);
+      });
   },
 };

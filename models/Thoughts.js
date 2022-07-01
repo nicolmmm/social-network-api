@@ -21,8 +21,6 @@ const thoughtsSchema = new Schema({
   reactions: [reactionsSchema],
 });
 
-//function formatDate(createdAt) {}
-
 thoughtsSchema
   .virtual("reactionCount")
   // Getter

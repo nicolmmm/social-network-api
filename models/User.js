@@ -1,9 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-console.log("test1");
-
 const thoughtsSchema = require("./Thoughts");
-//import thoughtsSchema from "./Thoughts.js";
 
 console.log("test2");
 const userSchema = new Schema({

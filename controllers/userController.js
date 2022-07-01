@@ -66,7 +66,7 @@ module.exports = {
       )
       .catch((err) => res.status(500).send("something went from :S"));
   },
-
+  //add a friend to user
   addUserFriend(req, res) {
     const filter = { _id: req.params._id };
     const update = { friends: req.params.friendId };
@@ -86,7 +86,7 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
-
+  //delete a friend from user
   DeleteUserFriendById(req, res) {
     const filter = { _id: req.params._id };
     const update = { friends: req.params.friendId };

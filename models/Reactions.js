@@ -23,7 +23,4 @@ const reactionsSchema = new Schema({
   },
 });
 
-//I dont think i need this as Reactions in a subdocument of thoughts?????
-//const Reactions = model("reactions", reactionSchema);
-
 module.exports = reactionsSchema;
